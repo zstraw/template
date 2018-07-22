@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"/>
+</head>
+<body>
+<div id="newParkStruct" style="float: left;">
+    <button @click="addModel" style="height: 40px;">新增</button>
+    <template>
+        <el-dialog title="新增" :visible.sync="dialogVisible"
+                   width="50%">
+            <el-form ref="form" :inline="true" :model="parkStruct" label-width="80px">
+                <el-form-item label="停车场结构">
+                    <el-input v-model="parkStruct.name"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="addParkStruct">立即创建</el-button>
+                    <el-button @click="dialogVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+    </template>
+</div>
+<div id="app">
+    <template>
+        <el-table :data="tableData" style="width: 100%">
+            <el-table-column label="停车场结构" width="180">
+                <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.name }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <el-dialog title="编辑" :visible.sync="dialogVisible"
+                   width="50%" :before-close="handleClose">
+            <el-form ref="form" :model="parkStruct" label-width="80px">
+                <el-form-item label="停车场结构">
+                    <el-input v-model="parkStruct.name"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmit">确认编辑</el-button>
+                    <el-button @click="dialogVisible = false">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+    </template>
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="/js/common/jquery-2.1.3.min.js"></script>
+<script>
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            tableData: [],
+            dialogVisible: false,
+            parkStruct: {}
+        },
+        created: function () {
+            this.init();
+        },
+        methods: {
+            init(){
+                $.ajaxSetup({type: "GET", dataType: "JSON"});
+                $.ajax({
+                    url: "/zy/3/parkStructs",
+                    success: function (ret) {
+                        app.tableData = ret.message;
+                    }
+                });
+            },
+            handleClose(done) {
+                done();
+            },
+            onSubmit() {
+
+                $.ajaxSetup({
+                    type: "PUT", contentType: "application/json; charset=utf-8",
+                    dataType: "JSON"
+                });
+                $.ajax({
+                    url: "/zy/3/parkStructs",
+                    data: JSON.stringify(this.parkStruct),
+                    success: function (ret) {
+                        app.tableData = ret.message;
+                        location.reload();
+                    }
+                });
+
+            },
+            handleEdit(index, row) {
+                this.curIndex = index;
+                this.parkStruct = Object.assign({}, row);
+
+                this.dialogVisible = true;
+            },
+            handleDelete(index, row) {
+                $.ajaxSetup({
+                    type: "DELETE",
+                    dataType: "JSON"
+                });
+                $.ajax({
+                    url: "/zy/3/parkStructs/"+row.id,
+                    success: function (ret) {
+                        app.tableData = ret.message;
+                        location.reload();
+                    }
+                });
+            }
+        }
+    })
+    var newParkStruct = new Vue({
+        el: "#newParkStruct",
+        data: {
+            parkStruct: {},
+            dialogVisible: false
+        },
+        methods: {
+            addParkStruct() {
+                $.ajaxSetup({type: "POST", contentType: "application/json; charset=utf-8", dataType: "JSON"});
+                $.ajax({
+                    url: "/zy/3/parkStructs",
+                    data: JSON.stringify({"name": this.parkStruct.name}),
+                    error: function () {
+                    },
+                    success: function (ret) {
+                        location.reload();
+                    }
+                });
+            },
+            addModel() {
+                this.dialogVisible = true;
+            }
+        }
+    })
+</script>
+</html>

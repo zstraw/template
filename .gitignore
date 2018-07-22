@@ -1,0 +1,7 @@
+# ideaFiles
+*.idea
+*.iml
+
+*.log
+logs
+target

@@ -1,0 +1,73 @@
+mybatis:
+    mapperLocations: classpath:/mapper/**Mapper.xml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/zy
+    username: root
+    password: 1234
+    testWhileIdle: true
+    validationQuery: SELECT 1
+#  mvc:
+#    view:
+#      prefix: /WEB-INF/view/
+#      suffix: .jsp
+  resources:
+    static-locations: classpath:/static, classpath:/resources, classpath:/public, classpath:/webapp
+    add-mappings: true
+
+  jpa:
+    show-sql: false
+    hibernate:
+      naming-strategy: org.hibernate.cfg.DefaultNamingStrategy
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        format_sql: true
+#        query.substitutions: true 1, false 0
+#        default_batch_fetch_size: 50
+#        jdbc.batch_size: 50
+#        order_inserts: true
+#        max_fetch_depth: 2
+        current_session_context_class: org.springframework.orm.hibernate4.SpringSessionContext
+        connection.zeroDateTimeBehavior: convertToNull
+
+# THYMELEAF (ThymeleafAutoConfiguration)
+#开启模板缓存（默认值：true）关闭避免修改了html不更新
+  thymeleaf:
+    cache: false
+#Check that the template exists before rendering it.
+    check-template: true
+#检查模板位置是否正确（默认值:true）
+    check-template-location: true
+#Content-Type的值（默认值：text/html）
+    content-type: text/html
+#开启MVC Thymeleaf视图解析（默认值：true）
+    enabled: true
+#模板编码
+    encoding: UTF-8
+#要被排除在解析之外的视图名称列表，用逗号分隔
+#    excluded-view-names:
+#要运用于模板之上的模板模式。另见StandardTemplate-ModeHandlers(默认值：HTML5) LEGACYHTML5检查没那么严格
+    mode: LEGACYHTML5
+#在构建URL时添加到视图名称前的前缀（默认值：classpath:/templates/）
+    prefix: classpath:/templates/
+#在构建URL时添加到视图名称后的后缀（默认值：.html）
+    suffix: .html
+#Thymeleaf模板解析器在解析器链中的顺序。默认情况下，它排第一位。顺序从1开始，只有在定义了额外的TemplateResolver Bean时才需要设置这个属性。
+#spring.thymeleaf.template-resolver-order=
+#可解析的视图名称列表，用逗号分隔
+#spring.thymeleaf.view-names=
+
+# Define the port where the API gateway server would be running
+server:
+  port: 9501
+  undertow:
+    io-threads: 4
+    worker-threads: 32
+    direct-buffers: true
+    buffer-size: 16000
+
+logging:
+#  level.org.springframework.security: debug
+
