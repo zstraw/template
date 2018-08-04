@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("zy/3")
 public class FrontController {
 
-    @RequestMapping("toParkStruct")
-    public String toParkStruct(){
-        return "parkStruct";
+    @RequestMapping("toTable")
+    public String toTable(){
+        return "table";
     }
+
+
 }

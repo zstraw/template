@@ -4,15 +4,30 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
     <context id="test" targetRuntime="MyBatis3">
-        <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"></plugin>
+        <!-- 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表；
+        一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖
+     -->
+        <property name="autoDelimitKeywords" value="false"/>
+
+        <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"></plugin>
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="tk.mybatis.mapper.common.Mapper"/>
+            <!-- caseSensitive默认false，当数据库表名区分大小写时，可以将该属性设置为true -->
+            <property name="caseSensitive" value="true"/>
+        </plugin>
 
+        <commentGenerator>
+            <!--  关闭自动生成的注释  -->
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
         <!--数据库链接URL，用户名、密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://127.0.0.1:3306/zy" userId="root" password="1234">
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/mis" userId="root" password="1234">
             <property name="useInformationSchema" value="true"></property>
         </jdbcConnection>
+
         <javaTypeResolver>
             <!-- This property is used to specify whether MyBatis Generator should
                 force the use of java.math.BigDecimal for DECIMAL and NUMERIC fields, -->
@@ -27,10 +42,6 @@
         <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources">
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
-        <commentGenerator>
-            <!--  关闭自动生成的注释  -->
-            <property name="suppressAllComments" value="true" />
-        </commentGenerator>
         <!-- 生成DAO的包名和位置 -->
         <javaClientGenerator type="XMLMAPPER"
                              targetPackage="com.didi.game.dao" targetProject="src/main/java">
@@ -38,11 +49,11 @@
         </javaClientGenerator>
 
         <!-- 要生成哪些表 -->
-        <table tableName="station" domainObjectName="Station">
+        <table tableName="tableInfo" domainObjectName="Table">
             <property name="useActualColumnNames" value="true"/>
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
-        <table tableName="parkStruct" domainObjectName="ParkStruct">
+        <table tableName="schema" domainObjectName="Schema">
             <property name="useActualColumnNames" value="true"/>
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
