@@ -6,6 +6,9 @@ public class SchemaDTO {
     private String type;
     private Integer valueStyle;
 
+    public SchemaDTO(){
+
+    }
     public String getName() {
         return name;
     }

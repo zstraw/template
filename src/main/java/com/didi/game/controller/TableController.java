@@ -1,7 +1,6 @@
 package com.didi.game.controller;
 
 import com.didi.game.common.Result;
-import com.didi.game.domain.Table;
 import com.didi.game.dto.TableDTO;
 import com.didi.game.service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,6 @@ public class TableController {
 
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public Result get(@PathVariable Integer id){
-
         return new Result(tableService.getTables(id));
     }
 
@@ -41,16 +39,13 @@ public class TableController {
 
     @RequestMapping(method = RequestMethod.POST)
     public Result insert(@RequestBody TableDTO tableDTO){
-
         return new Result(tableService.createTable(tableDTO));
     }
 
-    /*@RequestMapping(value = "{id}",method = RequestMethod.DELETE)
-    public Result delParkStruct(@PathVariable(value = "id") Integer id){
-//        Boolean result = parkStructService.delete(id);
-        return new Result(result);
-    }*/
-
-
+    @RequestMapping(value = "{id}",method = RequestMethod.DELETE)
+    public Result delete(@PathVariable(value = "id") Integer id){
+        tableService.delete(id);
+        return new Result(true);
+    }
 
 }

@@ -5,5 +5,7 @@ import java.util.List;
 
 public interface SQLMapper {
 
-    List<LinkedHashMap<String, Object>> createTable(String sql);
+    List<LinkedHashMap<String, Object>> executeSql(String sql);
+
+
 }

@@ -18,8 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,31 +49,32 @@ public class TableService {
         tableMapper.insert(table);
 
         int tableId = table.getId();
-        createSchemas(tableDTO.getFields(), tableId);
+        createSchemas(tableDTO.getFields(), table);
 
+        build(tableDTO);
         return tableId;
     }
 
     private void build(TableDTO tableDTO) {
         String sql = createSql(tableDTO);
-        sqlMapper.createTable(sql);
+        sqlMapper.executeSql(sql);
     }
 
-    private String createSql(TableDTO tableDTO){
-        String sql = "create table " + tableDTO.getName() + "(id int(11) not null auto_increment, ";
+    private String createSql(TableDTO tableDTO) {
+        String sql = "create table `" + tableDTO.getName() + "` (`id` int(11) not null auto_increment, ";
         List<SchemaDTO> schemaDTOs = tableDTO.getFields();
         for (int i = 0; i < schemaDTOs.size(); i++) {
             sql += getTypeSQL(schemaDTOs.get(i)) + ",";
         }
-        sql += "PRIMARY KEY (id))ENGINE=InnoDB DEFAULT CHARSET=utf8";
+        sql += "PRIMARY KEY (`id`))ENGINE=InnoDB DEFAULT CHARSET=utf8";
         return sql;
     }
 
     private String getTypeSQL(SchemaDTO dto) {
-        if (dto == null || StringUtils.isEmpty(dto.getName()) || StringUtils.isEmpty(dto.getValueStyle())) {
+        if (dto == null || StringUtils.isEmpty(dto.getName()) || StringUtils.isEmpty(dto.getType())) {
             throw new AppBusinessException("表属性不能无名称或者没有类型");
         }
-        return dto.getName() + " " + getType(dto.getType());
+        return "`" + dto.getName() + "` " + getType(dto.getType());
     }
 
     private String getType(String type) {
@@ -91,35 +94,107 @@ public class TableService {
         }
     }
 
-    private void createSchemas(List<SchemaDTO> schemaDTOs, Integer table) {
+    private void createSchemas(List<SchemaDTO> schemaDTOs, Table table) {
         if (CollectionUtils.isEmpty(schemaDTOs)) {
             throw new AppBusinessException("表不允许没有字段");
         }
         schemaDTOs.forEach(i -> createSchema(i, table));
     }
 
-    private void createSchema(SchemaDTO dto, Integer table) {
+    private void createSchema(SchemaDTO dto, Table table) {
         if (dto != null) {
             Schema schema = new Schema();
             schema.setName(dto.getName());
-            schema.setTable(table);
+            schema.setTableId(table.getId());
             schema.setType(dto.getType());
             schema.setValueStyle(dto.getValueStyle());
             schemaMapper.insert(schema);
         }
     }
 
+
     @Transactional(rollbackFor = Exception.class)
     public boolean update(TableDTO tableDTO) {
-        if (tableDTO == null || tableDTO.getId() != null) {
+        if (tableDTO == null || tableDTO.getId() == null) {
             return false;
         }
         Table table = tableMapper.selectByPrimaryKey(tableDTO.getId());
         if (!table.getName().equals(tableDTO.getName()) && tableDTO.getName() != null) {
+            renameTable(table.getName(), tableDTO.getName());
+
             table.setName(tableDTO.getName());
             tableMapper.updateByPrimaryKey(table);
         }
+        updateSchemas(tableDTO.getFields(), table);
+
+
         return true;
+    }
+
+    private void renameTable(String original, String newName) {
+        sqlMapper.executeSql("ALTER TABLE `" + original + "` RENAME `" + newName + "`");
+    }
+
+    private boolean updateSchemas(List<SchemaDTO> schemas, Table table) {
+        if (CollectionUtils.isEmpty(schemas)) {
+            return false;
+        }
+        // TODO 去重名列
+        SchemaExample example = new SchemaExample();
+        example.createCriteria().andTableIdEqualTo(table.getId());
+        List<Integer> originalSchemas = schemaMapper.selectByExample(example).stream().map(Schema::getId)
+                .collect(Collectors.toList());
+
+        for (SchemaDTO dto : schemas) {
+            Integer id = dto.getId();
+            if (originalSchemas.contains(id)) {
+                originalSchemas.remove(id);
+            }
+            if (id == null) {
+                createSchema(dto, table);
+                insertSchema(dto, table);
+            } else {
+                updateSchema(dto, table);
+            }
+        }
+        deleteUnnecessarySchema(originalSchemas, table.getName());
+        return true;
+    }
+
+    private void insertSchema(SchemaDTO dto, Table table) {
+        String sql = "ALTER TABLE `" + table.getName() + "` ADD `" + dto.getName() + "` " + getType(dto.getType());
+        sqlMapper.executeSql(sql);
+    }
+
+    private void deleteUnnecessarySchema(List<Integer> ids, String table) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return;
+        }
+        SchemaExample example = new SchemaExample();
+        example.createCriteria().andIdIn(ids);
+        List<Schema> schemas = schemaMapper.selectByExample(example);
+
+        schemas.stream().forEach(i -> {
+            String sql = "ALTER TABLE `" + table + "` DROP COLUMN `" + i.getName() + "`";
+            sqlMapper.executeSql(sql);
+        });
+
+        ids.parallelStream().forEach(id -> schemaMapper.deleteByPrimaryKey(id));
+    }
+
+    private void updateSchema(SchemaDTO dto, Table table) {
+        Schema schema = schemaMapper.selectByPrimaryKey(dto.getId());
+        String oldName = schema.getName();
+        schema.setName(dto.getName());
+        schema.setValueStyle(dto.getValueStyle());
+        schema.setType(dto.getType());
+        schema.setTableId(table.getId());
+        schemaMapper.updateByPrimaryKeySelective(schema);
+
+        String sql = "ALTER TABLE `" + table.getName() + "` CHANGE COLUMN `" + oldName + "` `" + schema.getName() +
+                "` " +
+                getType(schema.getType());
+        sqlMapper.executeSql(sql);
     }
 
     public List<TableDTO> getTables(Integer id) {
@@ -134,6 +209,25 @@ public class TableService {
         return tables.stream().map(this::toTableDTO).collect(Collectors.toList());
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Integer id) {
+        if (id == null) {
+            return;
+        }
+        Table table = tableMapper.selectByPrimaryKey(id);
+        deleteTable(table.getName());
+
+        tableMapper.deleteByPrimaryKey(id);
+        SchemaExample schemaExample = new SchemaExample();
+        schemaExample.createCriteria().andTableIdEqualTo(id);
+        schemaMapper.deleteByExample(schemaExample);
+    }
+
+    private void deleteTable(String table) {
+        String sql = "DROP TABLE `" + table + "`";
+        sqlMapper.executeSql(sql);
+    }
+
     public TableDTO toTableDTO(Table table) {
         TableDTO dto = new TableDTO();
         if (table != null) {
@@ -143,7 +237,7 @@ public class TableService {
                 logger.error("id is null");
                 return new TableDTO();
             }
-            example.createCriteria().andTableEqualTo(id);
+            example.createCriteria().andTableIdEqualTo(id);
             List<Schema> schemas = schemaMapper.selectByExample(example);
             List<SchemaDTO> schemaDTOS = schemas.stream().map(this::toSchemaDTO).collect(Collectors.toList());
 

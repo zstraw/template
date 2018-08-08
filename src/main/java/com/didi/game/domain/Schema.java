@@ -7,7 +7,7 @@ public class Schema implements Serializable {
 
     private String name;
 
-    private Integer table;
+    private Integer tableId;
 
     private String type;
 
@@ -31,12 +31,12 @@ public class Schema implements Serializable {
         this.name = name == null ? null : name.trim();
     }
 
-    public Integer getTable() {
-        return table;
+    public Integer getTableId() {
+        return tableId;
     }
 
-    public void setTable(Integer table) {
-        this.table = table;
+    public void setTableId(Integer tableId) {
+        this.tableId = tableId;
     }
 
     public String getType() {
@@ -69,7 +69,7 @@ public class Schema implements Serializable {
         Schema other = (Schema) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getTable() == null ? other.getTable() == null : this.getTable().equals(other.getTable()))
+            && (this.getTableId() == null ? other.getTableId() == null : this.getTableId().equals(other.getTableId()))
             && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
             && (this.getValueStyle() == null ? other.getValueStyle() == null : this.getValueStyle().equals(other.getValueStyle()));
     }
@@ -80,7 +80,7 @@ public class Schema implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getTable() == null) ? 0 : getTable().hashCode());
+        result = prime * result + ((getTableId() == null) ? 0 : getTableId().hashCode());
         result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
         result = prime * result + ((getValueStyle() == null) ? 0 : getValueStyle().hashCode());
         return result;
@@ -94,7 +94,7 @@ public class Schema implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
-        sb.append(", table=").append(table);
+        sb.append(", tableId=").append(tableId);
         sb.append(", type=").append(type);
         sb.append(", valueStyle=").append(valueStyle);
         sb.append(", serialVersionUID=").append(serialVersionUID);

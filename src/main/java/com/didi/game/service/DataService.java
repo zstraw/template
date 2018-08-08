@@ -1,30 +1,40 @@
 package com.didi.game.service;
 
-import com.didi.game.dao.ParkStructMapper;
-import com.didi.game.domain.ParkStruct;
-import com.didi.game.domain.ParkStructExample;
+import com.didi.game.dao.SQLMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
-public class ParkStructService {
+public class DataService {
 
     @Autowired
-    ParkStructMapper parkStructMapper;
+    SQLMapper sqlMapper;
 
-    public List<ParkStruct> getParkStructs() {
-        ParkStructExample example = new ParkStructExample();
-        example.createCriteria();
-        List<ParkStruct> parkStructs = parkStructMapper.selectByExample(example);
-        return parkStructs;
+    public List<?> getDatas(String table, Integer id) {
+        if (StringUtils.isEmpty(table)) {
+            return Collections.EMPTY_LIST;
+        }
+        List<?> datas = sqlMapper.executeSql(getSelectSql(table, id));
+        return datas;
     }
 
-    public String getName(Integer id) {
+    private String getSelectSql(String table, Integer id) {
+        String sql = "SELECT * FROM `" + table + "`";
+        if (id != null) {
+            sql += " WHERE `id`=" + id;
+        }
+        return sql;
+    }
+
+    /*public String getName(Integer id) {
         ParkStruct parkStruct = parkStructMapper.selectByPrimaryKey(id);
-        if(parkStruct==null){
+        if (parkStruct == null) {
             return null;
         }
         return parkStruct.getName();
@@ -45,9 +55,9 @@ public class ParkStructService {
     }
 
     public Boolean delete(Integer id) {
-        if(id!=null){
+        if (id != null) {
             parkStructMapper.deleteByPrimaryKey(id);
         }
         return true;
-    }
+    }*/
 }

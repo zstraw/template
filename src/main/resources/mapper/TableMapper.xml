@@ -72,7 +72,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from tableinfo
+    from `table_info`
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -83,15 +83,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from tableinfo
+    from `table_info`
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from tableinfo
+    delete from `table_info`
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.didi.game.domain.TableExample" >
-    delete from tableinfo
+    delete from `table_info`
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -100,14 +100,14 @@
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into tableinfo (name)
+    insert into `table_info` (name)
     values (#{name,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.didi.game.domain.Table" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into tableinfo
+    insert into `table_info`
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="name != null" >
         name,
@@ -120,13 +120,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.didi.game.domain.TableExample" resultType="java.lang.Integer" >
-    select count(*) from tableinfo
+    select count(*) from `table_info`
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map" >
-    update tableinfo
+    update `table_info`
     <set >
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
@@ -140,7 +140,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update tableinfo
+    update `table_info`
     set id = #{record.id,jdbcType=INTEGER},
       name = #{record.name,jdbcType=VARCHAR}
     <if test="_parameter != null" >
@@ -148,7 +148,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.didi.game.domain.Table" >
-    update tableinfo
+    update `table_info`
     <set >
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
@@ -157,7 +157,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.didi.game.domain.Table" >
-    update tableinfo
+    update `table_info`
     set name = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>

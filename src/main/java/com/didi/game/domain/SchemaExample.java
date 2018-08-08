@@ -234,63 +234,63 @@ public class SchemaExample {
             return (Criteria) this;
         }
 
-        public Criteria andTableIsNull() {
-            addCriterion("table is null");
+        public Criteria andTableIdIsNull() {
+            addCriterion("tableId is null");
             return (Criteria) this;
         }
 
-        public Criteria andTableIsNotNull() {
-            addCriterion("table is not null");
+        public Criteria andTableIdIsNotNull() {
+            addCriterion("tableId is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTableEqualTo(Integer value) {
-            addCriterion("table =", value, "table");
+        public Criteria andTableIdEqualTo(Integer value) {
+            addCriterion("tableId =", value, "tableId");
             return (Criteria) this;
         }
 
-        public Criteria andTableNotEqualTo(Integer value) {
-            addCriterion("table <>", value, "table");
+        public Criteria andTableIdNotEqualTo(Integer value) {
+            addCriterion("tableId <>", value, "tableId");
             return (Criteria) this;
         }
 
-        public Criteria andTableGreaterThan(Integer value) {
-            addCriterion("table >", value, "table");
+        public Criteria andTableIdGreaterThan(Integer value) {
+            addCriterion("tableId >", value, "tableId");
             return (Criteria) this;
         }
 
-        public Criteria andTableGreaterThanOrEqualTo(Integer value) {
-            addCriterion("table >=", value, "table");
+        public Criteria andTableIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("tableId >=", value, "tableId");
             return (Criteria) this;
         }
 
-        public Criteria andTableLessThan(Integer value) {
-            addCriterion("table <", value, "table");
+        public Criteria andTableIdLessThan(Integer value) {
+            addCriterion("tableId <", value, "tableId");
             return (Criteria) this;
         }
 
-        public Criteria andTableLessThanOrEqualTo(Integer value) {
-            addCriterion("table <=", value, "table");
+        public Criteria andTableIdLessThanOrEqualTo(Integer value) {
+            addCriterion("tableId <=", value, "tableId");
             return (Criteria) this;
         }
 
-        public Criteria andTableIn(List<Integer> values) {
-            addCriterion("table in", values, "table");
+        public Criteria andTableIdIn(List<Integer> values) {
+            addCriterion("tableId in", values, "tableId");
             return (Criteria) this;
         }
 
-        public Criteria andTableNotIn(List<Integer> values) {
-            addCriterion("table not in", values, "table");
+        public Criteria andTableIdNotIn(List<Integer> values) {
+            addCriterion("tableId not in", values, "tableId");
             return (Criteria) this;
         }
 
-        public Criteria andTableBetween(Integer value1, Integer value2) {
-            addCriterion("table between", value1, value2, "table");
+        public Criteria andTableIdBetween(Integer value1, Integer value2) {
+            addCriterion("tableId between", value1, value2, "tableId");
             return (Criteria) this;
         }
 
-        public Criteria andTableNotBetween(Integer value1, Integer value2) {
-            addCriterion("table not between", value1, value2, "table");
+        public Criteria andTableIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("tableId not between", value1, value2, "tableId");
             return (Criteria) this;
         }
 

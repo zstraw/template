@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.didi.game.domain.Schema" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="table" property="table" jdbcType="INTEGER" />
+    <result column="tableId" property="tableId" jdbcType="INTEGER" />
     <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="valueStyle" property="valueStyle" jdbcType="INTEGER" />
   </resultMap>
@@ -67,7 +67,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, name, table, type, valueStyle
+    id, name, tableId, type, valueStyle
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.didi.game.domain.SchemaExample" >
     select
@@ -75,7 +75,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from schema
+    from `schema`
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -86,15 +86,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from schema
+    from `schema`
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from schema
+    delete from `schema`
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="com.didi.game.domain.SchemaExample" >
-    delete from schema
+    delete from `schema`
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -103,22 +103,22 @@
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into schema (name, table, type, 
+    insert into `schema` (name, tableId, type, 
       valueStyle)
-    values (#{name,jdbcType=VARCHAR}, #{table,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, 
+    values (#{name,jdbcType=VARCHAR}, #{tableId,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, 
       #{valueStyle,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.didi.game.domain.Schema" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into schema
+    insert into `schema`
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="name != null" >
         name,
       </if>
-      <if test="table != null" >
-        table,
+      <if test="tableId != null" >
+        tableId,
       </if>
       <if test="type != null" >
         type,
@@ -131,8 +131,8 @@
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="table != null" >
-        #{table,jdbcType=INTEGER},
+      <if test="tableId != null" >
+        #{tableId,jdbcType=INTEGER},
       </if>
       <if test="type != null" >
         #{type,jdbcType=VARCHAR},
@@ -143,13 +143,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.didi.game.domain.SchemaExample" resultType="java.lang.Integer" >
-    select count(*) from schema
+    select count(*) from `schema`
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map" >
-    update schema
+    update `schema`
     <set >
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
@@ -157,8 +157,8 @@
       <if test="record.name != null" >
         name = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="record.table != null" >
-        table = #{record.table,jdbcType=INTEGER},
+      <if test="record.tableId != null" >
+        tableId = #{record.tableId,jdbcType=INTEGER},
       </if>
       <if test="record.type != null" >
         type = #{record.type,jdbcType=VARCHAR},
@@ -172,10 +172,10 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update schema
+    update `schema`
     set id = #{record.id,jdbcType=INTEGER},
       name = #{record.name,jdbcType=VARCHAR},
-      table = #{record.table,jdbcType=INTEGER},
+      tableId = #{record.tableId,jdbcType=INTEGER},
       type = #{record.type,jdbcType=VARCHAR},
       valueStyle = #{record.valueStyle,jdbcType=INTEGER}
     <if test="_parameter != null" >
@@ -183,13 +183,13 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.didi.game.domain.Schema" >
-    update schema
+    update `schema`
     <set >
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="table != null" >
-        table = #{table,jdbcType=INTEGER},
+      <if test="tableId != null" >
+        tableId = #{tableId,jdbcType=INTEGER},
       </if>
       <if test="type != null" >
         type = #{type,jdbcType=VARCHAR},
@@ -201,9 +201,9 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.didi.game.domain.Schema" >
-    update schema
+    update `schema`
     set name = #{name,jdbcType=VARCHAR},
-      table = #{table,jdbcType=INTEGER},
+      tableId = #{tableId,jdbcType=INTEGER},
       type = #{type,jdbcType=VARCHAR},
       valueStyle = #{valueStyle,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}

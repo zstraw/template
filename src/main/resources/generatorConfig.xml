@@ -9,14 +9,11 @@
      -->
         <property name="autoDelimitKeywords" value="false"/>
 
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
         <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/>
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>
         <plugin type="org.mybatis.generator.plugins.ToStringPlugin"></plugin>
-        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
-            <property name="mappers" value="tk.mybatis.mapper.common.Mapper"/>
-            <!-- caseSensitive默认false，当数据库表名区分大小写时，可以将该属性设置为true -->
-            <property name="caseSensitive" value="true"/>
-        </plugin>
 
         <commentGenerator>
             <!--  关闭自动生成的注释  -->
@@ -48,12 +45,12 @@
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
-        <!-- 要生成哪些表 -->
-        <table tableName="tableInfo" domainObjectName="Table">
+        <!-- 要生成哪些表,当存在关键字作为字段名或表名时，设置delimitIdentifiers，同时在context的property中加入beginningDelimiter与end -->
+        <table tableName="table_info" domainObjectName="Table" delimitIdentifiers="true">
             <property name="useActualColumnNames" value="true"/>
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
-        <table tableName="schema" domainObjectName="Schema">
+        <table tableName="schema" domainObjectName="Schema" delimitIdentifiers="true">
             <property name="useActualColumnNames" value="true"/>
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>

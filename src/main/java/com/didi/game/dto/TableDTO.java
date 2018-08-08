@@ -8,6 +8,9 @@ public class TableDTO {
     private String name;
     private List<SchemaDTO> fields;
 
+    public TableDTO(){
+
+    }
     public Integer getId() {
         return id;
     }
